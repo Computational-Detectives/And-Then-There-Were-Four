@@ -1,0 +1,11 @@
+# Ignore various file created by IDEs
+__pycache__/
+*.pyc
+.env
+.venv/
+.DS_Store
+.idea/
+.vscode/
+
+# Ignore BookNLP Output files
+out/
