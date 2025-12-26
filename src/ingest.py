@@ -60,7 +60,6 @@ def main():
 		model_path = get_model_path()
 
 		# Create custom model w/o original `position_ids` in BERT models
-		# TODO: See if OS dependent path prefixes and syntax can be implemented.
 		model_params = {
 				"pipeline": "entity,quote,supersense,event,coref", 
 				"model": "custom",
