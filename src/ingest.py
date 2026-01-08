@@ -1,12 +1,12 @@
-import os
 import torch
+import argparse
 
-from pathlib import Path
+from typing import Dict
 from booknlp.booknlp import BookNLP
 from booknlp_fix import process_model_files, get_model_path, exists_model_path
 
 
-def init_run():
+def init_run(file_name: str, out: str):
 	'''
 	A convenience function executed as the initial run of the script
 	to download all BERT models used by BookNLP. All subsequent executions
@@ -27,24 +27,13 @@ def init_run():
 			"model": "big"
 		}
 		
-		booknlp = BookNLP("en", model_params)
-
-		# Input file to process
-		input_file = "../data/attwn.txt"
-
-		# Output directory to store resulting files in
-		output_directory = "../data/out"
-
-		# File within this directory will be named ${book_id}.entities, ${book_id}.tokens, etc.
-		book_id = "attwn"
-
-		# Run the processing pipeline
-		booknlp.process(input_file, output_directory, book_id)
+		# Run initial processing pipeline
+		run_pipeline(file_name, model_params, out)
 	except Exception as e:
 		pass
 
 
-def main():
+def main(file_name: str, out: str):
 	'''
 	The main function of the script to execute the BookNLP pipeline.
 
@@ -53,7 +42,7 @@ def main():
 	through to the `finally`-block.
 	'''
 	try:
-		init_run()
+		init_run(file_name, out)
 	except Exception as e:
 		pass
 	finally:
@@ -75,21 +64,43 @@ def main():
 		# Process the new model files with deleted `position_ids`
 		model_params = process_model_files(model_params, device)
 
-		# Create the BookNLP pipeline object
-		booknlp = BookNLP("en", model_params)
+		# Run processing pipeline
+		run_pipeline(file_name, model_params, out)
 
-		# Input file to process
-		input_file = "../data/attwn.txt"
 
-		# Output directory to store resulting files in
-		output_directory = "../data/out"
+def run_pipeline(file_name: str, model_params: Dict, out: str) -> None:
+	'''
+	A convenience method to run the final `BookNLP` processing pipeline
+	with the provided model paramaters on the given file.
+	
+	:param file_name: The name of the file to be processed
+	:type file_name: str
+	:param model_params: The dictionary containing the model parameters
+	:type model_params: Dict
+	'''
+	# Create the BookNLP pipeline object
+	booknlp = BookNLP("en", model_params)
 
-		# File within this directory will be named ${book_id}.entities, ${book_id}.tokens, etc.
-		book_id = "attwn"
+	# Input file to process
+	input_file = file_name
 
-		# Run the processing pipeline
-		booknlp.process(input_file, output_directory, book_id)
+	# Output directory to store resulting files in
+	output_directory = out
+
+	# File within this directory will be named ${book_id}.entities, ${book_id}.tokens, etc.
+	book_id = f"{file_name.split('/')[-1].split('.')[0]}"
+
+	# Run the processing pipeline
+	booknlp.process(input_file, output_directory, book_id)
 
 
 if __name__ == '__main__':
-    main()
+	parser = argparse.ArgumentParser(description="A script to process a given input file in TXT-format using the BookNLP library.")
+
+	parser.add_argument('input_file', help='The path to the input file to be processed')
+	parser.add_argument('-o', '--out', default='../data/out/', help='The output directory to which the processing results are written')
+
+	args = parser.parse_args()
+	
+	# Call main method
+	main(args.input_file, args.out)
