@@ -2,8 +2,11 @@ import torch
 import argparse
 
 from typing import Dict
+from pathlib import Path
 from booknlp.booknlp import BookNLP
 from booknlp_fix import process_model_files, get_model_path, exists_model_path
+from preproc import preprocess
+from colorama import Fore, Style, init
 
 
 def init_run(file_name: str, out: str):
@@ -102,5 +105,18 @@ if __name__ == '__main__':
 
 	args = parser.parse_args()
 	
+	# Required for colorama to work on Windows 
+	init()
+
+	input_file: Path = Path(args.input_file)
+
+	# Preprocess book file
+	print(f'[{Fore.BLUE}*{Style.RESET_ALL}] Preprocessing the file \'{input_file.name}\'.')
+	preproc_out_file = f'{input_file.parent}/preproc_{input_file.name}' 
+	preprocess(str(args.input_file), preproc_out_file)
+	print(f"[{Fore.GREEN}+{Style.RESET_ALL}] Preprocessed \'{input_file.name}\' by removing whitespace from sentences. Stored results in {preproc_out_file}")
+
 	# Call main method
-	main(args.input_file, args.out)
+	print(f'[{Fore.BLUE}*{Style.RESET_ALL}] Running BookNLP pipeline on \'{input_file.name}\'')
+	main(preproc_out_file, args.out)
+	print(f'[{Fore.GREEN}+{Style.RESET_ALL}] Finished running BookNLP pipeline on \'{input_file.name}\'. Results are stored in \'{args.out}\'.')

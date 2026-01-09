@@ -26,12 +26,12 @@ def remove_position_ids_and_save(model_file: str, device: torch.device, save_pat
 
     # Remove the 'position_ids' key if it exists
     if "bert.embeddings.position_ids" in state_dict:
-        print(f"Removing 'position_ids' from the state dictionary of {model_file}")
+        # print(f"Removing 'position_ids' from the state dictionary of {model_file}")
         del state_dict["bert.embeddings.position_ids"]
 
     # Save the modified state dict to a new file
     torch.save(state_dict, save_path)
-    print(f"Modified state dict saved to {save_path}")
+    # print(f"Modified state dict saved to {save_path}")
 	
     
 def process_model_files(model_params: Dict[str, str], device: torch.device) -> Dict[str, str]:
