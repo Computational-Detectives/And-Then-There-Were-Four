@@ -27,7 +27,7 @@ def preprocess(input_file: str, output_file: str):
 
     # TODO: Add removal of Chapter headers
     # ==========================
-    # STEP 2: Collapse line breaks inside quotes
+    # Collapse line breaks inside quotes
     # ==========================
     # Matches double or single quotes
     # quote_pattern = r'(["\'])(.*?)\1'
