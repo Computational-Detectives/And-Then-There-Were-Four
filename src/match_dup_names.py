@@ -5,7 +5,7 @@ import pandas as pd
 from time import sleep
 from pathlib import Path
 from typing import Tuple
-from colorama import Fore, Style
+from colorama import Fore, Style, init
 
 
 # # Explore number of events detected
@@ -185,12 +185,15 @@ def postprocess_characters(df_roles: pd.DataFrame, output_file: Path) -> None:
     df_roles = df_roles.sort_values(by=['canonical_character_id'])
 
     # Write results to file
-    df_roles.to_csv(str(output_file / 'merged_characters_new.characters'), sep='\t', index=False)
+    df_roles.to_csv(str(output_file / 'merged_characters.characters'), sep='\t', index=False)
 
     sleep(1)
-    print(f'[{Fore.GREEN}+{Style.RESET_ALL}] Wrote results to file str(output_file / "merged_characters_new.characters")')
+    print(f'[{Fore.GREEN}+{Style.RESET_ALL}] Wrote results to file str(output_file / "merged_characters.characters")')
 
 if __name__ == '__main__':
+    # Required for colorama to work on Windows
+    init()
+
     parser = argparse.ArgumentParser(description="Running this script will match the proper names of the same character if they were extracted to be from different entities.")
     parser.add_argument('input_file', help='The path to the input file that is to be used for matching')
     parser.add_argument('output_file', help='The path to output directory (w/o the final ' + "'\\') to be used to write the results to")
