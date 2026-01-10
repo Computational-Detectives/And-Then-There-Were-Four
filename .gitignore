@@ -7,5 +7,7 @@ __pycache__/
 .idea/
 .vscode/
 
+# Ignore auxiliary directories
+chapters/
 # Ignore BookNLP Output files
 # out/

@@ -2,4 +2,4 @@ booknlp
 pandas
 networkx
 torch
-
+colorama
