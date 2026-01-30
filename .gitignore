@@ -6,8 +6,18 @@ __pycache__/
 .DS_Store
 .idea/
 .vscode/
+lib/
 
 # Ignore auxiliary directories
 chapters/
+archive/
+gen/
+webapp/
+
+# Ignore Jupyter Notebooks
+*.ipynb
+NOTES.md
+*.pdf
+
 # Ignore BookNLP Output files
 # out/
