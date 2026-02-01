@@ -174,6 +174,8 @@ def safe_to_list(x):
         except (ValueError, SyntaxError):
             return []
     return []
+
+
 # ============================
 # NORMALIZATION UTILITIES
 # ============================

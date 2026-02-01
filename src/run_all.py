@@ -71,18 +71,6 @@ if __name__ == '__main__':
         help="The output directory to which the processing results are written",
     )
 
-    # parser.add_argument(
-    #     '-a', '--avp',
-    #     action='store_true',
-    #     help='A flag to generate Action-Verb-Patient triples'
-    # )
-
-    # parser.add_argument(
-    #     '-s', '-svo',
-    #     action='store_true',
-    #     help='A flag to generate Subject-Verb-Object triples'
-    # )
-
     parser.add_argument(
         "-v", "--verbose",
         action="store_true",
