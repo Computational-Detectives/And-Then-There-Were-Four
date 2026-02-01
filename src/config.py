@@ -3,19 +3,20 @@
 # ============================
 
 # Standard output location
-BASE_OUT_DIR = "../data/out_test"
-AVP_OUT = BASE_OUT_DIR + "/avp"
-SVO_OUT = BASE_OUT_DIR + "/svo"
+BASE_DATA_DIR = "../data"
+BASE_OUT_DIR = "../out"
+TRIPLE_OUT = BASE_OUT_DIR + "/triples"
 COOC_OUT = BASE_OUT_DIR + "/cooccurrence"
 NETWORK_OUT = BASE_OUT_DIR + "/network"
 
 # Path to BookNLP files
+ATTWN = BASE_DATA_DIR + "/book/attwn.txt"
 BOOK = BASE_OUT_DIR + "/preproc_attwn.book"
 ENTITY = BASE_OUT_DIR + "/preproc_attwn.entities"
 TOKENS = BASE_OUT_DIR + "/preproc_attwn.tokens"
 
 # Path to canonical names database
-CLEAN_NAMES = "../data/names.csv"
+CLEAN_NAMES = BASE_DATA_DIR + "/names.csv"
 
 
 # ============================

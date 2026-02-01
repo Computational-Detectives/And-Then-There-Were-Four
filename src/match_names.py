@@ -1,16 +1,11 @@
-import re
 import os
-import ast
 import argparse
 import pandas as pd
 
 from rapidfuzz import fuzz, process
-from colorama import Fore, Style, init
 from typing import Dict, List, Optional, Set, Tuple
-from config import BOOK, OUTPUT_DIR, TITLES, MAN_CORRECT_IDS
+from config import BOOK, BASE_OUT_DIR, TITLES, MAN_CORRECT_IDS
 from auxiliary import load_and_flatten_characters, normalize_name, clean_non_names, extract_gender, print_headers, print_information
-
-init()
 
 
 # ============================================================================
@@ -290,7 +285,7 @@ def merge_final_output(characters: pd.DataFrame, canonical_summary: pd.DataFrame
 # MAIN PIPELINE
 # ============================================================================
 def main(input_file: str, output_dir: str, verbose: bool = False): # , mode: str):
-    print_headers("RUNNING NAME MATCHING PIPELINE", "=")
+    print_headers("RUNNING NAME MATCHING PIPELINE", "=", "\n")
 
     # Load clean names
     print_information("Loading clean names database...", 1, "\n")
@@ -373,8 +368,7 @@ def main(input_file: str, output_dir: str, verbose: bool = False): # , mode: str
 
     # Print summary and save results
     if verbose:
-        print()
-        print_headers("MATCHING SUMMARY", "=")
+        print_headers("MATCHING SUMMARY", "=", prefix="\n")
 
         total_mentions = len(characters)
         match_mask = characters["matched_id"].notna()
@@ -422,8 +416,7 @@ def main(input_file: str, output_dir: str, verbose: bool = False): # , mode: str
     summary_path = f"{output_dir}/canonical_mappings.csv"
 
     if verbose:
-        print()
-        print_headers("OVERVIEW", "=")
+        print_headers("OVERVIEW", "=", prefix="\n")
         print(canonical_summary.to_string(index=False))
 
     canonical_summary.to_csv(summary_path, index=False)
@@ -444,14 +437,15 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "-o", "--output",
-        default=OUTPUT_DIR,
+        default=BASE_OUT_DIR,
         help="Output directory for results"
     )
 
     parser.add_argument(
         '-v', '--verbose', 
         action="store_true",
-        help="A flag to trigger verbose output")
+        help="A flag to trigger verbose output"
+        )
 
     args = parser.parse_args()
     main(args.input, args.output, args.verbose)

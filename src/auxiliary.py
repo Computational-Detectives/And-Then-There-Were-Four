@@ -1,16 +1,17 @@
+import os
 import re
 import ast
+import csv
 import json
 import spacy
 import pandas as pd
 
 from pathlib import Path
 from colorama import Fore, Style, init
+from typing import List, Set, Optional
 from config import ARTICLES, NON_NAME_WORDS, KEEP_IDS_COMMON, ADD_GENDER_IDS
-from typing import Any, Dict, List, Tuple, Set, Optional
 
 init()
-
 
 # ============================
 # Preprocessing
@@ -48,6 +49,9 @@ def preprocess(input_file: str, output_file: str):
     doc = nlp(text)
 
     # Write collapsed sentences to file
+    if not os.path.exists(Path(output_file).parent):
+        os.mkdir(Path(output_file).parent)
+
     with open(output_file, "w", encoding="utf-8") as f:
         for sent in doc.sents:
             # Collapse everything inside the sentence
@@ -55,6 +59,16 @@ def preprocess(input_file: str, output_file: str):
             f.write(clean_sent + "\n")
 
 
+def load_booknlp_file(path: str):
+    return pd.read_csv(
+        path,
+        sep="\t",
+        quoting=csv.QUOTE_NONE,
+        engine="python",
+        keep_default_na=False
+    )
+
+    
 def load_and_flatten_characters(input_file: str, verbose: bool = False) -> pd.DataFrame:
     """
     This method loads the data on the extracted characters from the JSON
@@ -147,6 +161,19 @@ def load_and_flatten_characters(input_file: str, verbose: bool = False) -> pd.Da
     return characters
 
 
+def safe_to_list(x):
+    """Convert value to list, handling various input types."""
+    if isinstance(x, list):
+        return x
+    if isinstance(x, (set, tuple)):
+        return list(x)
+    if isinstance(x, str):
+        try:
+            result = ast.literal_eval(x)
+            return list(result) if isinstance(result, (list, set, tuple)) else []
+        except (ValueError, SyntaxError):
+            return []
+    return []
 # ============================
 # NORMALIZATION UTILITIES
 # ============================
@@ -237,8 +264,9 @@ def extract_gender(pronoun_str: str) -> str:
 # ========================
 # Print Helper
 # ========================
-def print_headers(msg: str, symb: str):
-    print(f'{symb * 80}\n{msg}\n{symb * 80}')
+def print_headers(msg: str, symb: str, prefix: str = ""):
+    print(f'{prefix}{symb * 80}\n{msg}\n{symb * 80}')
+
 
 def print_information(msg: str, symb: Optional[str|int] = None, prefix: str = "", col: str = "BLUE"):
     if symb:

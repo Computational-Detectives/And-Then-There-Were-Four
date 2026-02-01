@@ -4,10 +4,9 @@ import argparse
 
 from typing import Dict
 from pathlib import Path
-from config import OUTPUT_DIR
-from auxiliary import preprocess
+from config import BASE_OUT_DIR
 from booknlp.booknlp import BookNLP
-from colorama import Fore, Style, init
+from auxiliary import preprocess, print_headers, print_information
 from booknlp_fix import exists_model_path, get_model_path, process_model_files
 
 
@@ -38,7 +37,33 @@ def init_run(file_name: str, out: str):
         pass
 
 
-def main(file_name: str, out: str):
+def run_pipeline(file_name: str, model_params: Dict, out: str) -> None:
+    """
+    A convenience method to run the final `BookNLP` processing pipeline
+    with the provided model paramaters on the given file.
+
+    :param file_name: The name of the file to be processed
+    :type file_name: str
+    :param model_params: The dictionary containing the model parameters
+    :type model_params: Dict
+    """
+    # Create the BookNLP pipeline object
+    booknlp = BookNLP("en", model_params)
+
+    # Input file to process
+    input_file = file_name
+
+    # Output directory to store resulting files in
+    output_directory = out
+
+    # File within this directory will be named ${book_id}.entities, ${book_id}.tokens, etc.
+    book_id = f"{file_name.split('/')[-1].split('.')[0]}"
+
+    # Run the processing pipeline
+    booknlp.process(input_file, output_directory, book_id)
+
+
+def main(file_name: Path, out: Path):
     """
     The main function of the script to execute the BookNLP pipeline.
 
@@ -46,8 +71,19 @@ def main(file_name: str, out: str):
     downloaded in `init_run`. Subsequent runs to the initial run fall
     through to the `finally`-block.
     """
+    print_headers("BOOK INGESTION", "=")
+
+    preproc_out_file = f"{out}/preproc_{file_name.name}"
+
+    # Preprocess book file
+    print_information(f"Preprocessing the file {file_name.name}", 1, "\n")
+    preprocess(file_name, preproc_out_file)
+    print_information(f"Preprocessed '{file_name.name}' by removing whitespace from sentences. Stored results in {preproc_out_file}", prefix="    ")
+
+    print_information(f"Running BookNLP pipeline on '{preproc_out_file}'", 2, "\n")
+
     try:
-        init_run(file_name, out)
+        init_run(preproc_out_file, str(out))
     except Exception as e:
         pass
     finally:
@@ -82,33 +118,8 @@ def main(file_name: str, out: str):
         model_params = process_model_files(model_params, device)
 
         # Run processing pipeline
-        run_pipeline(file_name, model_params, out)
-
-
-def run_pipeline(file_name: str, model_params: Dict, out: str) -> None:
-    """
-    A convenience method to run the final `BookNLP` processing pipeline
-    with the provided model paramaters on the given file.
-
-    :param file_name: The name of the file to be processed
-    :type file_name: str
-    :param model_params: The dictionary containing the model parameters
-    :type model_params: Dict
-    """
-    # Create the BookNLP pipeline object
-    booknlp = BookNLP("en", model_params)
-
-    # Input file to process
-    input_file = file_name
-
-    # Output directory to store resulting files in
-    output_directory = out
-
-    # File within this directory will be named ${book_id}.entities, ${book_id}.tokens, etc.
-    book_id = f"{file_name.split('/')[-1].split('.')[0]}"
-
-    # Run the processing pipeline
-    booknlp.process(input_file, output_directory, book_id)
+        run_pipeline(preproc_out_file, model_params, out)
+        print_information(f"Finished running BookNLP pipeline on '{file_name.name}'. Results stored in '{out}'", "✓", "\n", col="GREEN")
 
 
 if __name__ == "__main__":
@@ -116,40 +127,25 @@ if __name__ == "__main__":
         description="A script to process a given input file in TXT-format using the BookNLP library."
     )
 
-    parser.add_argument("input_file", help="The path to the input file to be processed")
+    parser.add_argument(
+        "input_file", 
+        type=Path, 
+        help="The path to the input file to be processed"
+        )
+    
     parser.add_argument(
         "-o",
         "--out",
-        default=OUTPUT_DIR,
+        default=BASE_OUT_DIR,
         help="The output directory to which the processing results are written",
     )
 
     args = parser.parse_args()
 
-    # Required for colorama to work on Windows
-    init()
-
-    input_file: Path = Path(args.input_file)
-
-    # Preprocess book file
-    print(
-        f"[{Fore.BLUE}*{Style.RESET_ALL}] Preprocessing the file '{input_file.name}'."
-    )
-
     if not os.path.isdir(args.out):
         os.makedirs(args.out)
         
-    preproc_out_file = f"{args.out}/preproc_{input_file.name}"  # input_file.parent
-    preprocess(str(args.input_file), preproc_out_file)
-    print(
-        f"[{Fore.GREEN}+{Style.RESET_ALL}] Preprocessed '{input_file.name}' by removing whitespace from sentences. Stored results in {preproc_out_file}"
-    )
+      # input_file.parent
+    main(args.input_file, args.out)
 
-    # Call main method
-    print(
-        f"[{Fore.BLUE}*{Style.RESET_ALL}] Running BookNLP pipeline on '{input_file.name}'"
-    )
-    main(preproc_out_file, args.out)
-    print(
-        f"[{Fore.GREEN}+{Style.RESET_ALL}] Finished running BookNLP pipeline on '{input_file.name}'. Results are stored in '{args.out}'."
-    )
+    
