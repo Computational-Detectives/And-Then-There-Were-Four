@@ -1,3 +1,7 @@
+import warnings
+warnings.simplefilter(action="ignore", category=FutureWarning)
+warnings.simplefilter(action="ignore", category=UserWarning)
+
 import argparse
 import pandas as pd
 
@@ -9,6 +13,7 @@ from match_names import main as match_names
 from extract_avp_triples import extract_avp
 from extract_svo_triples import main as extract_svo
 from join_triples import join_triples
+from cooccurrence import main as extract_coocurrence
 
 
 def main(input: Path, out: Path, verbose: bool = False):
@@ -42,9 +47,11 @@ def main(input: Path, out: Path, verbose: bool = False):
         verbose=verbose
     )
 
-    # 7) Merge SVO and AVP triples
-
-    # 8) Run cooccurrence network creation
+    # 7) Run cooccurrence network creation
+    extract_coocurrence(
+        output_dir=out / 'cooccurrence', 
+        verbose=verbose
+    )
 
 
 if __name__ == '__main__':

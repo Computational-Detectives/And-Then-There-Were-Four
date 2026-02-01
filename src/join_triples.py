@@ -18,7 +18,7 @@ def join_triples(dir: Path = TRIPLE_OUT, verbose: bool = False) -> None:
         Combined DataFrame with duplicates removed
     """
     print_headers("JOINING OF AVP & SVO TRIPLES", symb="=", prefix="\n")
-    print_information("Joining triples...", 1)
+    print_information("Joining triples...", 1, prefix="\n")
 
     avp = pd.read_csv(f'{dir}/avp_triples.csv', sep='\t')
     svo = pd.read_csv(f'{dir}/svo_triples.csv', sep='\t')

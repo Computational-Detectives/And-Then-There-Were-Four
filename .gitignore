@@ -9,15 +9,19 @@ __pycache__/
 lib/
 
 # Ignore auxiliary directories
-chapters/
+data/book/scan
 archive/
 gen/
 webapp/
+b
 
 # Ignore Jupyter Notebooks
 *.ipynb
-NOTES.md
 *.pdf
+
+# Ignore all md-files except for README.md
+*.md
+README.md
 
 # Ignore BookNLP Output files
 # out/

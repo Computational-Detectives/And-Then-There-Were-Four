@@ -343,7 +343,7 @@ def main(input_file: str, output_dir: str, verbose: bool = False): # , mode: str
         lambda r: r["matched_fullname"] if r["matched_id"] is not None else r["original_name"],
         axis=1
     )
-    print_information("Matched all names. For a summary use '-v' or '--verbose'.", prefix="    ")
+    print_information("Matched all names", prefix="    ")
 
     # Canonicalise the character IDs by finding the smallest
     # original character_id for each matched_fullname
@@ -368,7 +368,7 @@ def main(input_file: str, output_dir: str, verbose: bool = False): # , mode: str
 
     # Print summary and save results
     if verbose:
-        print_headers("MATCHING SUMMARY", "=", prefix="\n")
+        print_headers("MATCHING SUMMARY", "-", prefix="\n")
 
         total_mentions = len(characters)
         match_mask = characters["matched_id"].notna()
@@ -416,7 +416,7 @@ def main(input_file: str, output_dir: str, verbose: bool = False): # , mode: str
     summary_path = f"{output_dir}/canonical_mappings.csv"
 
     if verbose:
-        print_headers("OVERVIEW", "=", prefix="\n")
+        print_headers("OVERVIEW", "-", prefix="\n")
         print(canonical_summary.to_string(index=False))
 
     canonical_summary.to_csv(summary_path, index=False)

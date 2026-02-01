@@ -510,7 +510,7 @@ def main(out: Path = TRIPLE_OUT, verbose: bool = False) -> None:
     Token.set_extension("global_id", default=None, force=True)
     
     # --------- Load tokens ---------
-    print_information(f"Loading tokens from {TOKENS} ...", 1, '\n')
+    print_information(f"Loading tokens from {TOKENS}...", 1, '\n')
     df = load_booknlp_file(TOKENS)
     print_information(f"Loaded {df.shape[0]} tokens", prefix="    ")
 
@@ -585,12 +585,6 @@ def main(out: Path = TRIPLE_OUT, verbose: bool = False) -> None:
     print_information(f"Final matched SVO triples saved to → {out}/svo_triples.csv", symb="✓", prefix="\n", col="GREEN")
 
     if verbose:
-        print_headers("SVO EXTRACTION SUMMARY", "=", prefix="\n")
-        
-        # Overall statistics
-        print(f"    Total triples extracted:    {len(all_triples)}")
-        print(f"    Final matched triples:      {len(svo)}")
-        
         # COREF matching statistics
         print_headers("COREF MATCHING", "-", prefix="\n")
         print(f"    Triples with subject COREF: {coref_stats['subj_with_coref']} ({coref_stats['subj_with_coref']/coref_stats['total_triples']*100:.1f}%)")
