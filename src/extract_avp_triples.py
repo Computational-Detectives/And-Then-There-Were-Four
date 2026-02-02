@@ -9,7 +9,6 @@ from extract_svo_triples import make_doc_from_sentence, is_negated
 from auxiliary import get_chapter_token_range, int_range, print_headers, print_information
 
 
-
 def get_negation(avp: pd.DataFrame, tokens_df: pd.DataFrame) -> pd.DataFrame:
     """
     For each AVP triple, reconstruct the sentence and check if the verb is negated.

@@ -6,7 +6,7 @@ from config import BASE_OUT_DIR, TRIPLE_OUT
 from auxiliary import print_headers, print_information
 
 
-def join_triples(dir: Path = TRIPLE_OUT, verbose: bool = False) -> None:
+def join_triples(dir: Path = TRIPLE_OUT) -> None:
     """
     Join AVP and SVO triples into a single DataFrame.
     

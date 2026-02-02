@@ -214,7 +214,7 @@ def match_name(
     return None, original_name, 0.0, None
 
 
-def merge_final_output(characters: pd.DataFrame, canonical_summary: pd.DataFrame, output_dir: str): # , mode: str):
+def merge_final_output(characters: pd.DataFrame, canonical_summary: pd.DataFrame, output_dir: str):
     """
     Merges canonical_mappings.csv and matched_characters.csv into a single file of the following format.
 
@@ -254,7 +254,6 @@ def merge_final_output(characters: pd.DataFrame, canonical_summary: pd.DataFrame
 
     # Construct the final DataFrame with selected columns
     output_df = pd.DataFrame({
-        # 'source': mode,
         'canonical_id': merged['canonical_id'],
         'name': merged['names'],
         'role': merged['role'],
@@ -284,7 +283,7 @@ def merge_final_output(characters: pd.DataFrame, canonical_summary: pd.DataFrame
 # ============================================================================
 # MAIN PIPELINE
 # ============================================================================
-def main(input_file: str, output_dir: str, verbose: bool = False): # , mode: str):
+def main(input_file: str, output_dir: str, verbose: bool = False):
     print_headers("RUNNING NAME MATCHING PIPELINE", "=", "\n")
 
     # Load clean names
